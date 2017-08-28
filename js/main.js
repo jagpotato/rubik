@@ -69,6 +69,9 @@ for ( let i = 0; i < 6; i++ ) {
   }
 }
 
+const black = new THREE.MeshBasicMaterial({color: 0x000000});
+black.side = THREE.DoubleSide;
+
 const planeMaterial = new Array(6);
 planeMaterial[0] = new THREE.MeshBasicMaterial({color: 0xff0000});
 planeMaterial[1] = new THREE.MeshBasicMaterial({color: 0x008000});
@@ -85,7 +88,12 @@ for ( let i = 0; i < 6; i++ ) {
   plane[i] = [];
   let planes = new THREE.Group();
   for ( let j = 0; j < 9; j++ ) {
-    plane[i][j] = new THREE.Mesh(planeGeometry[i][j], planeMaterial[i]);
+    if ( j == 0 ) {
+      plane[i][j] = new THREE.Mesh(planeGeometry[i][j], black);
+    } else {
+      plane[i][j] = new THREE.Mesh(planeGeometry[i][j], planeMaterial[i]);
+    }
+    // plane[i][j] = new THREE.Mesh(planeGeometry[i][j], planeMaterial[i]);
     planes.add(plane[i][j]);
   }
   switch ( i ) {
@@ -101,10 +109,10 @@ for ( let i = 0; i < 6; i++ ) {
     case 3: planes.rotation.set(0, Math.PI / 2, 0);
             planes.position.set(-17, 0, 0);
             break;
-    case 4: planes.rotation.set(Math.PI / 2, 0, 0);
+    case 4: planes.rotation.set(-Math.PI / 2, 0, 0);
             planes.position.set(0, 17, 0);
             break;
-    case 5: planes.rotation.set(Math.PI / 2, 0, 0);
+    case 5: planes.rotation.set(-Math.PI / 2, 0, 0);
             planes.position.set(0, -17, 0);
             break;
     default: break;
@@ -181,6 +189,47 @@ function setPlane(plane, num) {
       index++;
     }
   }
+}
+
+// 回転グループ
+let rotateX = [];
+rotateX = initArray(rotateX, 3);
+rotateX[0].add(plane[0][0]);
+// rotateX[0].add(plane[0][3]);
+// rotateX[0].add(plane[0][6]);
+// rotateX[0].add(plane[2][0]);
+// rotateX[0].add(plane[2][3]);
+// rotateX[0].add(plane[2][6]);
+// rotateX[0].add(plane[4][0]);
+// rotateX[0].add(plane[4][3]);
+// rotateX[0].add(plane[4][6]);
+// rotateX[0].add(plane[5][0]);
+// rotateX[0].add(plane[5][3]);
+// rotateX[0].add(plane[5][6]);
+// rotateX[0] = addPlanesToGroup(rotateX[0], 3);
+// console.log(rotateX);
+scene.add(rotateX[0]);
+
+let rotateY = [];
+rotateY = initArray(rotateY, 3);
+
+let rotateZ = [];
+rotateZ = initArray(rotateZ, 3);
+
+
+
+function initArray(array, size) {
+  for ( let i = 0; i < size; i++ ) {
+    array[i] = new THREE.Group();
+  }
+  return array;
+}
+
+function addPlanesToGroup(group, index) {
+  for ( let i = 0; i < 9; i++ ) {
+    group.add(plane[index][i]);
+  }
+  return group;
 }
 
 // レンダリング
